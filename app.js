@@ -19,6 +19,8 @@ app.use(cors(
     }
 ))
 
+app.use(express.urlencoded({ extended: true }));
+
 mongoose.connect(process.env.MONGO_URL)
     .then(()=>{
         console.log("Successfull connection with the database")

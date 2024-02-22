@@ -56,7 +56,7 @@ export const getPost = async (req, res)=>{
 }
 // Get All POSTs
 export const getAllPost = async (req, res)=>{
-    try {
+    try {                
         const queryUsername = req.query.username;        
         const queryCategory = req.query.categories;
         let allPosts;

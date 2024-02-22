@@ -15,7 +15,7 @@ export const authRegistration = async (req, res)=>{
         const user = await newUser.save()
         res.status(201).json({message:"User successfully created", result: `${user}`})
     } catch (error) {
-        res.status(500).json({message:error.message})
+        res.status(400).json({message:"User with same credentials already exists!"})
     }
 }
 
