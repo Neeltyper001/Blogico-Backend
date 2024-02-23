@@ -7,11 +7,13 @@ import postRouter from "./routes/post.js";
 import category from "./routes/category.js";
 import uploadRoute from "./routes/upload.js";
 import cors from 'cors'
+import path from 'path';
 
-
+const __dirname = path.dirname(new URL(import.meta.url).pathname);
 const app = express()
 const port = process.env.PORT_NUMBER;
 app.use(express.json())
+app.use('/images', express.static('images'));
 app.use(cors(
     {
         origin: process.env.ALLOWED_ORIGIN,
@@ -26,6 +28,8 @@ mongoose.connect(process.env.MONGO_URL)
         console.log("Successfull connection with the database")
     })
     .catch(err => console.log(err))
+
+
 
 app.use('/api/uploads/',uploadRoute)    
 app.use('/api/auth',auth);

@@ -3,11 +3,11 @@ import Post from "../models/Post.js";
 // Create POST
 export const createPost = async (req, res)=>{
     
-    try {        
-        const createdPost = await Post.create(req.body)
-        res.status(201).json({message:"Post created successfully" , results: createdPost});
+    try {                
+        const createdPost = await Post.create(req.body)        
+        res.status(201).json(createdPost);
     } catch (error) {
-        res.status(500).json({message:error.message})
+        res.status(400).json({message:error.message})
     }
 }
 // Update POST
