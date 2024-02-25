@@ -3,19 +3,19 @@ import Post from "../models/Post.js";
 import bcrypt from 'bcrypt'
 
 // Update User Details
-export const updateUser = async (req, res)=>{
-    if(req.body.id === req.params.id){
+export const updateUser = async (req, res)=>{    
+    if(req.body.userId === req.params.id){
         try {
             const salt =  bcrypt.genSaltSync(10);
             const hashedNewPassword =  bcrypt.hashSync(req.body.password , salt)
             req.body.password = hashedNewPassword;
 
-            const updatedUser = await User.findByIdAndUpdate(req.body.id , {
+            const updatedUser = await User.findByIdAndUpdate(req.body.userId , {
                 $set: req.body
             },
             {new:true})
             ;
-
+            
             if(!updatedUser){
                 return res.status(404).json("User not found with the id you have provided!")
             }
