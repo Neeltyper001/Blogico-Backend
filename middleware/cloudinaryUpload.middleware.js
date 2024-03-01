@@ -1,3 +1,4 @@
+import fs from 'fs'
 import path from "path";
 import { fileURLToPath } from 'url';
 import { cloudinary } from "../configurations/cloudinaryUploadConfig.js";
@@ -23,14 +24,16 @@ export const cloudinaryUploads = async (req, res, next)=>{
 
          req.body.imageUrl = response.url;
          console.log(req.body.imageUrl)
+         fs.unlinkSync(localFilePath);
 
         } catch (error) {
+            fs.unlinkSync(localFilePath);
             return res.json({message:error.message});
         }
         next();
     }
 
     else{
-       return  res.json({message: `No file `})
+       return  res.json({message: `No file to upload `})
     }
 }

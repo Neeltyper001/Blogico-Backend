@@ -1,4 +1,6 @@
 import Post from "../models/Post.js";
+import getImageId from "../utils/getImageId.js";
+import { cloudinary } from "../configurations/cloudinaryUploadConfig.js";
 
 // Create POST
 export const createPost = async (req, res)=>{
@@ -40,6 +42,16 @@ export const updatePost = async (req, res)=>{
 export const deletePost = async (req, res)=>{
     try {
         const deletePost = await Post.findByIdAndDelete(req.params.id)
+        console.log(deletePost)
+        const imageId = getImageId(deletePost.photo)
+        console.log(imageId)
+
+        const cloudinaryDelete = await cloudinary.api.delete_resources(
+            [`blogico/users/${deletePost.username}/posts/${imageId}`], 
+            { type: 'upload', resource_type: 'image' }
+            )
+
+        console.log(cloudinaryDelete);
         res.status(201).json({message:"Post deleted successfully", results: deletePost})
     } catch (error) {
         res.status(500).json({message:error.message})
