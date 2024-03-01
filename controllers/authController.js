@@ -1,6 +1,6 @@
 import User from "../models/User.js";
 import bcrypt from "bcrypt";
-
+import { cloudinary } from "../configurations/cloudinaryUploadConfig.js";
 // Signup
 export const authRegistration = async (req, res)=>{    
     try {        
@@ -11,8 +11,15 @@ export const authRegistration = async (req, res)=>{
             email: req.body.email,
             password: hashedPassword            
         })
-
+        
         const user = await newUser.save()
+        const cloudinaryResUserFolder = await cloudinary.api.create_folder(`blogico/users/${req.body.username}`)
+        console.log(cloudinaryResUserFolder)
+        const cloudinaryResUserProfileFolder = await cloudinary.api.create_folder(`blogico/users/${req.body.username}/profile`)
+        console.log(cloudinaryResUserProfileFolder)
+        const cloudinaryResUserPostsFolder = await cloudinary.api.create_folder(`blogico/users/${req.body.username}/posts`)
+        console.log(cloudinaryResUserPostsFolder)
+
         res.status(201).json({message:"User successfully created", result: `${user}`})
     } catch (error) {
         res.status(400).json({message:"User with same credentials already exists!"})
