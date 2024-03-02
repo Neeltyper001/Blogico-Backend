@@ -1,7 +1,8 @@
 import User from "../models/User.js";
 import Post from "../models/Post.js";
 import bcrypt from 'bcrypt'
-
+import getImageId from "../utils/getImageId.js";
+import { cloudinary } from "../configurations/cloudinaryUploadConfig.js";
 // Update User Details
 export const updateUser = async (req, res)=>{    
     if(req.body.userId === req.params.id){
@@ -9,6 +10,12 @@ export const updateUser = async (req, res)=>{
             const salt =  bcrypt.genSaltSync(10);
             const hashedNewPassword =  bcrypt.hashSync(req.body.password , salt)
             req.body.password = hashedNewPassword;
+
+            const userOld = await User.findOne({ _id: req.body.userId })
+            console.log(userOld)
+            console.log(userOld.profilePic)
+            const userOldProfilePicId = getImageId(userOld.profilePic);
+            console.log(userOldProfilePicId);
 
             const updatedUser = await User.findByIdAndUpdate(req.body.userId , {
                 $set: req.body
@@ -19,6 +26,13 @@ export const updateUser = async (req, res)=>{
             if(!updatedUser){
                 return res.status(404).json("User not found with the id you have provided!")
             }
+
+            const cloudinaryDelete = await cloudinary.api.delete_resources(
+                [`blogico/users/${req.body.username}/profile/${userOldProfilePicId}`], 
+                { type: 'upload', resource_type: 'image' }
+                )
+
+            console.log(cloudinaryDelete);
             res.status(200).json(updatedUser);
         } catch (error) {
             res.status(501).json({message:error.message})
