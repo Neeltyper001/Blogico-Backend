@@ -13,7 +13,7 @@ import cors from 'cors'
 const app = express()
 const port = process.env.PORT_NUMBER;
 app.use(express.json())
-// app.use('/images', express.static('images'));
+app.use('/images', express.static('images'));
 app.use(cors(
     {
         origin: process.env.ALLOWED_ORIGIN,
