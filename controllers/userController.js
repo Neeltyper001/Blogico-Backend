@@ -44,16 +44,31 @@ export const updateUser = async (req, res)=>{
     }
 }
 // Delete Users Details
-export const deleteUser = async (req, res)=>{
-    if(req.body.id === req.params.id){
-        try{            
-            const targetUser = await User.findById(req.params.id)            
-            await Post.deleteMany({username:targetUser.username})
-            await User.findByIdAndDelete(req.params.id)
+export const deleteUser = async (req, res)=>{    
+    console.log(req.body.userId);
+    console.log(req.body.username);
+    console.log(req.params.id);
+    if(req.body.userId === req.params.id){
+        try{  
+            console.log("testing");
+            // const response1  = await cloudinary.api.delete_resources_by_prefix('Example/subfolder/folder1')   
+            // const response2  = await cloudinary.api.delete_resources_by_prefix('Example/subfolder/folder2')   
+            
+                                 
+            // console.log(response1);
+            // console.log(response2);
+
+            // const response3 = await cloudinary.api.delete_folder("Example/subfolder/");
+            // console.log(response3);
+            // console.log(req.body.userId);
+
+            // const targetUser = await User.findById(req.params.id)            
+            // await Post.deleteMany({username:targetUser.username})
+            // await User.findByIdAndDelete(req.params.id)
             res.status(200).json({message: "User deleted successfully"})
         }
         catch(error){
-            res.status(404).json({message:"target user not found"})
+            res.status(404).json({message: error.message})
         }
     }
     else{
