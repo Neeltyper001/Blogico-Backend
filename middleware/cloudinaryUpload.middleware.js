@@ -9,13 +9,13 @@ const __dirname = path.dirname(__filename);
 // middleware for uploading files to cloudinary
 
 export const cloudinaryUploads = async (req, res, next)=>{
-    console.log(__dirname)
+    // console.log(__dirname)
     const localFilePath = path.join(__dirname, '..','images', req.file.filename);
-    console.log(localFilePath);  
+    // console.log(localFilePath);  
     
     console.log(`Req body contains: ${JSON.stringify(req.body.username)}`)
     if(localFilePath){
-        console.log("About to upload on cloudinary....")
+        // console.log("About to upload on cloudinary....")
         try {
           const response = await  cloudinary.uploader.upload(localFilePath,{
                 folder:`blogico/users/${req.body.username}/${req.body.upload_asset_type}`,
@@ -23,7 +23,7 @@ export const cloudinaryUploads = async (req, res, next)=>{
             });
 
          req.body.imageUrl = response.url;
-         console.log(req.body.imageUrl)
+        //  console.log(req.body.imageUrl)
          fs.unlinkSync(localFilePath);
 
         } catch (error) {
@@ -37,3 +37,4 @@ export const cloudinaryUploads = async (req, res, next)=>{
        return  res.json({message: `No file to upload `})
     }
 }
+

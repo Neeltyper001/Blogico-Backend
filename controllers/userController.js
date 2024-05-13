@@ -5,6 +5,7 @@ import getImageId from "../utils/getImageId.js";
 import { cloudinary } from "../configurations/cloudinaryUploadConfig.js";
 // Update User Details
 export const updateUser = async (req, res)=>{    
+    console.log(req.body)
     if(req.body.userId === req.params.id){
         try {
             const salt =  bcrypt.genSaltSync(10);
@@ -12,17 +13,33 @@ export const updateUser = async (req, res)=>{
             req.body.password = hashedNewPassword;
 
             const userOld = await User.findOne({ _id: req.body.userId })
-            console.log(userOld)
-            console.log(userOld.profilePic)
+            // console.log(userOld)
+            // console.log(userOld.profilePic)
+            
+            if(req.body.username === '' ){
+                req.body.username = userOld.username;
+            }
+
+            if(req.body.email === ''){
+                req.body.email = userOld.email;
+            }
+
+            if(req.body.password === ''){
+                req.body.password = userOld.password;
+            }
+
+
             const userOldProfilePicId = getImageId(userOld.profilePic);
             console.log(userOldProfilePicId);
 
+            console.log(req.body);
             const updatedUser = await User.findByIdAndUpdate(req.body.userId , {
                 $set: req.body
             },
             {new:true})
-            ;
             
+            
+
             if(!updatedUser){
                 return res.status(404).json("User not found with the id you have provided!")
             }
@@ -33,9 +50,10 @@ export const updateUser = async (req, res)=>{
                 )
 
             console.log(cloudinaryDelete);
+            console.log("updatedUser");
             res.status(200).json(updatedUser);
         } catch (error) {
-            res.status(501).json({message:error.message})
+            res.status(501).json({error})
         }
     }
 
@@ -51,20 +69,20 @@ export const deleteUser = async (req, res)=>{
     if(req.body.userId === req.params.id){
         try{  
             console.log("testing");
-            // const response1  = await cloudinary.api.delete_resources_by_prefix('Example/subfolder/folder1')   
-            // const response2  = await cloudinary.api.delete_resources_by_prefix('Example/subfolder/folder2')   
+            const response1  = await cloudinary.api.delete_resources_by_prefix(`blogico/users/${req.body.username}/posts`)   
+            const response2  = await cloudinary.api.delete_resources_by_prefix(`blogico/users/${req.body.username}/profile`)   
             
                                  
-            // console.log(response1);
-            // console.log(response2);
+            console.log(response1);
+            console.log(response2);
 
-            // const response3 = await cloudinary.api.delete_folder("Example/subfolder/");
-            // console.log(response3);
-            // console.log(req.body.userId);
+            const response3 = await cloudinary.api.delete_folder(`blogico/users/${req.body.username}/`);
+            console.log(response3);
+            console.log(req.body.userId);
 
-            // const targetUser = await User.findById(req.params.id)            
-            // await Post.deleteMany({username:targetUser.username})
-            // await User.findByIdAndDelete(req.params.id)
+            const targetUser = await User.findById(req.params.id)            
+            await Post.deleteMany({username:targetUser.username})
+            await User.findByIdAndDelete(req.params.id)
             res.status(200).json({message: "User deleted successfully"})
         }
         catch(error){
