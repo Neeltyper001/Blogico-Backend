@@ -6,17 +6,23 @@ import { cloudinary } from "../configurations/cloudinaryUploadConfig.js";
 // Update User Details
 export const updateUser = async (req, res)=>{    
     console.log(req.body)
+    console.log(typeof(req.body.password));
     if(req.body.userId === req.params.id){
         try {
-            const salt =  bcrypt.genSaltSync(10);
-            const hashedNewPassword =  bcrypt.hashSync(req.body.password , salt)
-            req.body.password = hashedNewPassword;
+            
+            if(req.body.password === ''){
+                console.log(true);
+            }
+
 
             const userOld = await User.findOne({ _id: req.body.userId })
+            // console.log("userOld everything")
             // console.log(userOld)
             // console.log(userOld.profilePic)
-            
-            if(req.body.username === '' ){
+            // req.body.password = "hello"
+            // console.log(req.body.password)
+            // console.log(userOld.password);
+            if(req.body.username === '' ){                
                 req.body.username = userOld.username;
             }
 
@@ -26,13 +32,20 @@ export const updateUser = async (req, res)=>{
 
             if(req.body.password === ''){
                 req.body.password = userOld.password;
+                console.log(req.body.password);
+            }
+
+            else{
+                const salt =  bcrypt.genSaltSync(10);
+                const hashedNewPassword =  bcrypt.hashSync(req.body.password , salt)
+                req.body.password = hashedNewPassword;
             }
 
 
             const userOldProfilePicId = getImageId(userOld.profilePic);
-            console.log(userOldProfilePicId);
+            // console.log(userOldProfilePicId);
 
-            console.log(req.body);
+            // console.log(req.body);
             const updatedUser = await User.findByIdAndUpdate(req.body.userId , {
                 $set: req.body
             },
@@ -49,8 +62,8 @@ export const updateUser = async (req, res)=>{
                 { type: 'upload', resource_type: 'image' }
                 )
 
-            console.log(cloudinaryDelete);
-            console.log("updatedUser");
+            // console.log(cloudinaryDelete);
+            // console.log("updatedUser");
             res.status(200).json(updatedUser);
         } catch (error) {
             res.status(501).json({error})

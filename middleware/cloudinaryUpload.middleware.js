@@ -13,7 +13,7 @@ export const cloudinaryUploads = async (req, res, next)=>{
     const localFilePath = path.join(__dirname, '..','images', req.file.filename);
     // console.log(localFilePath);  
     
-    console.log(`Req body contains: ${JSON.stringify(req.body.username)}`)
+    // console.log(`Req body contains: ${JSON.stringify(req.body.username)}`)
     if(localFilePath){
         // console.log("About to upload on cloudinary....")
         try {
